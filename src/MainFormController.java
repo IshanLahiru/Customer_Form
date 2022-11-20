@@ -9,6 +9,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 public class MainFormController {
     public TextField txtCustId;
     public TextField txtCustName;
@@ -34,17 +37,25 @@ public class MainFormController {
 
     public void setData() {
         ObservableList<CustomerTM> cust = FXCollections.observableArrayList();
-
-        for (Customer ob : Database.ar) {
-            Button tem = new Button("Delete");
-            CustomerTM temp = new CustomerTM(ob.getCustId(), ob.getCustName(), ob.getCustAddress(), ob.getSalary(), tem);
-            cust.add(temp);
-            tem.setOnAction(e -> {
-                Database.ar.remove(ob);
-                setData();
-            });
+        try {
+            ArrayList<Customer> customer =CustomerModel.getAllCustomers();
+            for (Customer ob : customer) {
+                Button tem = new Button("Delete");
+                CustomerTM temp = new CustomerTM(ob.getCustId(), ob.getCustName(), ob.getCustAddress(), ob.getSalary(), tem);
+                cust.add(temp);
+                tem.setOnAction(e -> {
+                    Database.ar.remove(ob);
+                    setData();
+                });
+            }
+            tblCustomer.setItems(cust);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        tblCustomer.setItems(cust);
+
+
     }
 
     public void saveButtonOnAction(ActionEvent actionEvent) {
