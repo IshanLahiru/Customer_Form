@@ -10,7 +10,7 @@ public class CustomerModel {
         System.out.println("result set size is = "+result.getFetchSize());
         ArrayList<Customer> customer = new ArrayList<>();
 
-        if (result.next()) {
+        while (result.next()) {
             customer.add(new Customer(
                     result.getString(1),
                     result.getString(2),
